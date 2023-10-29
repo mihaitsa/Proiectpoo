@@ -1,0 +1,114 @@
+#include <iostream>
+
+class Casuta {
+private:
+    bool bomba;
+    bool deschisa;
+    bool are_steag;
+    bool bomba_in_apropiere;
+
+public:
+    Casuta() : bomba(false), deschisa(false), are_steag(false), bomba_in_apropiere(false) {}
+    Casuta(const Casuta& sursa) {
+        bomba = sursa.bomba;
+        deschisa = sursa.deschisa;
+        are_steag = sursa.are_steag;
+        bomba_in_apropiere = sursa.bomba_in_apropiere;
+    }
+
+    Casuta& operator=(const Casuta& sursa) {
+        if (this == &sursa) {
+            return *this; 
+        }
+
+        bomba = sursa.bomba;
+        deschisa = sursa.deschisa;
+        are_steag = sursa.are_steag;
+        bomba_in_apropiere = sursa.bomba_in_apropiere;
+
+        return *this;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Casuta& casuta) {
+        os << "Bomba: " << casuta.bomba << ", Deschisa: " << casuta.deschisa
+           << ", Are Steag: " << casuta.are_steag << ", Bomba in Apropiere: " << casuta.bomba_in_apropiere;
+        return os;
+    }
+
+    ~Casuta() = default;
+
+    void deschide(){
+        deschisa = true;
+    }
+    void pune_steag(){
+        are_steag = true;
+    }
+};
+
+class Tabla {
+private:
+    int lungime_casute;
+    int inaltime_casute;
+    int nr_bombe;
+
+public:
+    Tabla(int lungime, int inaltime, int bombe) : lungime_casute(lungime), inaltime_casute(inaltime), nr_bombe(bombe) {
+
+    }
+
+    int getLungime() const {
+        return lungime_casute;
+    }
+
+    int getInaltime() const {
+        return inaltime_casute;
+    }
+
+    int getNrBombe() const {
+        return nr_bombe;
+    }
+
+};
+
+class Jucator {
+private:
+    int Scor;
+
+public:
+    Jucator() : Scor(0) {
+    }
+     int getScor() const {
+        return Scor;
+    }
+    ~Jucator() = default;
+};
+
+class Minesweeper {
+private:
+    Tabla tabla;
+    Jucator jucator;
+
+public:
+    Minesweeper(int lungime, int inaltime, int bombe) : tabla(lungime, inaltime, bombe), jucator() {
+    }
+
+    void deschide_casuta(int x, int y) {
+    }
+
+    void pune_steag() {
+    }
+
+    void deschide_tabla() {
+    }
+    ~Minesweeper() = default;
+};
+
+int main() {
+    Minesweeper minesweeper(8, 8, 10);
+    minesweeper.deschide_casuta(4, 5);
+    minesweeper.pune_steag(3, 4);
+    minesweeper.pune_steag(5, 9);
+
+
+    return 0;
+}
