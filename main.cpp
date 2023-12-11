@@ -8,16 +8,23 @@ using namespace std;
 
 const int MAXSIDE = 25;
 const int MAXMINES = 99;
-const int MOVESIZE = 526;
 
 class Game {
 public:
+    static int gameCount;
+
     virtual ~Game() {}
     virtual void play() = 0;
     virtual void printBoard(const vector<vector<char>> &myBoard) = 0;
     virtual bool makeMove(int *x, int *y) = 0;
+    virtual Game *clone() const = 0;
 
+    static int getGameCount() {
+        return gameCount;
+    }
 };
+
+int Game::gameCount = 0;
 
 class MinesweeperGame : public Game {
 private:
@@ -35,6 +42,29 @@ public:
 
         initialize();
         placeMines();
+        gameCount++;
+    }
+
+    MinesweeperGame(const MinesweeperGame &other) {
+        SIDE = other.SIDE;
+        MINES = other.MINES;
+        realBoard = other.realBoard;
+        myBoard = other.myBoard;
+        movesLeft = other.movesLeft;
+        for (int i = 0; i < MINES; ++i) {
+            mines[i][0] = other.mines[i][0];
+            mines[i][1] = other.mines[i][1];
+        }
+        gameCount++;
+    }
+
+    MinesweeperGame &operator=(MinesweeperGame other) {
+        swap(*this, other);
+        return *this;
+    }
+
+    ~MinesweeperGame() override {
+        gameCount--;
     }
 
     void play() override {
@@ -54,8 +84,6 @@ public:
                 }
             }
         }
-
-
     }
 
     void printBoard(const vector<vector<char>> &board) override {
@@ -84,7 +112,9 @@ public:
         return (*x < 0 || *x >= SIDE || *y < 0 || *y >= SIDE);
     }
 
-
+    MinesweeperGame *clone() const override {
+        return new MinesweeperGame(*this);
+    }
 
 private:
     void initialize() {
@@ -164,9 +194,12 @@ private:
     }
 
     bool isValid(int row, int col) {
-        return (row >= 0) && (row < SIDE) &&
-               (col >= 0) && (col < SIDE);
+    if (row < 0 || row >= SIDE || col < 0 || col >= SIDE) {
+        return false;
     }
+    return true;
+}
+
 
     bool isMine(int row, int col) {
         return realBoard[row][col] == '*';
@@ -203,12 +236,19 @@ void chooseDifficultyLevel() {
     game.play();
 }
 
+
+
+
 int main() {
+        
+
     try {
         chooseDifficultyLevel();
     } catch (const exception &e) {
         cerr << "Exception: " << e.what() << endl;
     }
+
+    cout << "Total game instances: " << Game::getGameCount() << endl;
 
     return 0;
 }
